@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 0 20px;
+      }
+
+      #container {
+        border: 2px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      #container-dark {
+        border: 2px solid #dedede;
+        background-color: #dc143c;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .container::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .container img {
+        float: left;
+        max-width: 60px;
+        width: 100%;
+        margin-right: 20px;
+        border-radius: 50%;
+      }
+
+      .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right: 0;
+      }
+
+      .time-right {
+        float: right;
+        color: #aaa;
+      }
+
+      .time-left {
+        float: left;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Unifi Chat</h1>
+    <label for="w3review">Chats</label>
+    <!-- <textarea id="textDisp" name="w3review" rows="35" cols="50"> </textarea> -->
+    <br /><br />
+    <div id="chatDisplay"></div>
+    <form id="chatForm">
+      <input type="text" value="chat goes here" />
+      <input type="text" value="flag" />
+    </form>
+    <button onclick="sendMessage()">SEND</button>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyBVjKpm4Xb4ksBPIBcDTPkXFmcwQhc_GRU",
+        authDomain: "unifi-dab93.firebaseapp.com",
+        databaseURL: "https://unifi-dab93-default-rtdb.firebaseio.com",
+        projectId: "unifi-dab93",
+        storageBucket: "unifi-dab93.appspot.com",
+        messagingSenderId: "745801068896",
+        appId: "1:745801068896:web:4e156d92bab03f75f52e05"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      var database = firebase.database();
+
+      //   var flag = 1;
+      //   var message = "hello";
+
+      function sendMessage() {
+        var x = document.getElementById("chatForm");
+        if (x.elements[1].value > 1 || x.elements[1].value < 0) {
+          alert("FLAG MUST BE 0/1");
+          return false;
+        }
+        // var text = "";
+        //var i;
+        let obj = {
+          Flag: x.elements[1].value,
+          Message: x.elements[0].value,
+          createdAt: firebase.database.ServerValue.TIMESTAMP
+        };
+        console.log(obj);
+        firebase
+          .database()
+          .ref("Adil/Messages/Simran")
+          .push(obj);
+      }
+
+      var readRef = firebase.database().ref("Adil/Messages/Simran/");
+
+      readRef.on("value", function(snapshot) {
+        //  document.getElementById("textDisp").innerHTML = "";
+        snapshot.forEach(snap => {
+          const chat = snap.val();
+          console.log(chat);
+
+          if (chat.Flag == 1) {
+            // document.getElementById("container").style.color = "red";
+            var div = document.createElement("div");
+            document.createElement("div");
+            div.id = "container";
+            div.innerHTML = `${chat.Message}`;
+            var chatDisplay = document.getElementById("chatDisplay");
+            chatDisplay.appendChild(div);
+            // div.className = "border pad";
+
+            //  document.getElementById("container").innerHTML += ;
+          } else if (chat.Flag == 0) {
+            //  document.getElementById("textDisp").style.color = "black";
+            // document.getElementById(
+            //   "container-dark"
+            // ).innerHTML += `${chat.Message}`;
+            var div = document.createElement("div");
+            document.createElement("div");
+            div.id = "container-dark";
+            div.innerHTML = `${chat.Message}`;
+            var chatDisplay = document.getElementById("chatDisplay");
+            chatDisplay.appendChild(div);
+          }
+          // const data = snapshot.val();
+          // console.log(data.createdAt);
+        });
+      });
+    </script>
+  </body>
+</html>
